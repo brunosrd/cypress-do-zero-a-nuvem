@@ -37,7 +37,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('#firstName').type('Bruno')
     cy.get('#lastName').type('Ribeiro')
     cy.get('#email').type('brunosr099@outlook.com')
-    cy.get('#phone-checkbox').click()
+    cy.get('#phone-checkbox').check()
     cy.get('#open-text-area').type('Ajuda')
     cy.contains('button', 'Enviar').click()
 
@@ -65,13 +65,62 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('.success').should('be.visible')
   })
 
-  it.only('seleciona um produto (YouTube) por seu texto', () => {
+  it('seleciona um produto (YouTube) por seu texto', () => {
     cy.fillMandatoryFieldsAndSubmit()
     cy.get('#product')
       .select('YouTube')
       .should('have.value', 'youtube')
     cy.get('button[type="submit"]').click()
-    
+
     cy.get('.success').should('be.visible')
   })
+
+  it('seleciona um produto (Mentoria) por seu valor (value)', () => {
+    cy.get('#product')
+      .select('mentoria')
+      .should('have.value', 'mentoria')
+  })
+
+  it('seleciona um produto (Blog) por seu índice', () => {
+    cy.get('#product')
+      .select(1)
+      .should('have.value', 'blog')
+  })
+
+  it('marca o tipo de atendimento "Feedback"', () => {
+    cy.get('input[type="radio"][value="feedback"]')
+    .check()
+    .should('be.checked')
+  })
+
+  it('marca cada tipo de atendimento', () => {
+    cy.get('input[type="radio"]')
+      .each(typeOfService =>{
+        cy.wrap(typeOfService)
+          .check()
+      })
+  })
+
+
+  it('marca ambos checkboxes, depois desmarca o último', () =>{
+    // cy.get('input#email-checkbox').check()
+    // cy.get('input#phone-checkbox').check()
+
+    // cy.get('input#phone-checkbox').uncheck()
+
+    cy.get('input[type="checkbox"]')
+      .check()
+      .last()
+      .uncheck()
+  })
+
+  it('seleciona um arquivo da pasta fixtures', () => {
+    cy.get('#file-upload')
+      .selectFile('cypress/fixtures/example.json')
+      .then(input => {
+        expect(input[0].files[0].name).to.equal('example.json')
+      })
+  })
+
+
 })
